@@ -1,0 +1,13 @@
+.dinosaur{
+    position: relative;
+}
+.dinosaur-img{
+    position: absolute;
+    left: 5px;
+    bottom: 12px;
+
+    width: 80px;
+    height: 80px;
+    background-image: url('image/wow.png');
+    background-size: 80px 80px;
+}
