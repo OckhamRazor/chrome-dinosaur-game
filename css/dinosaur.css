@@ -8,6 +8,6 @@
 
     width: 80px;
     height: 80px;
-    background-image: url('image/wow.png');
+    background-image: url('../image/wow.png');
     background-size: 80px 80px;
 }
