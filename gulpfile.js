@@ -24,9 +24,9 @@ gulp.task('lint',function () {
  */
 gulp.task('scripts', function () {
     gulp.src('./js/*.js')
-        .pipe(concat('all.js'))
+        .pipe(concat('dinosaur.js'))
         .pipe(gulp.dest('./dist'))
-        .pipe(rename('all.min.js'))
+        .pipe(rename('dinosaur.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./dist'));
 });
