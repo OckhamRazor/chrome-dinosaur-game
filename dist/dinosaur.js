@@ -718,6 +718,7 @@ var Game = (function () {
                     dinosaur.jump.status = true;
                     dinosaur.riseTimer.start();
                     game.playSound('jump');
+                    addBlurEvent();
                 }
             }
         }
@@ -990,11 +991,21 @@ var Game = (function () {
         SPRITE_URL = url;
         game.queueImage(SPRITE_URL);  //将图片资源列入加载列表
     }
-
+    //设置Logo URL
     function setLogoURL(url) {
         LOGO_URL = url;
         game.queueImage(LOGO_URL);  //将图片资源列入加载列表
     }
+    //注册事件
+    //当窗口失去焦点 就暂停
+    function addBlurEvent() {
+        window.addEventListener('blur',function () {
+            var now = getTimeNow();
+            game.paused = true;
+            game.startedPauseAt = now;
+        });
+    }
+
     /*************************************************************************************
      *                          开始游戏
      *************************************************************************************/

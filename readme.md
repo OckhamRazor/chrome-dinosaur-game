@@ -23,11 +23,17 @@
 
 ###使用说明：
 
+可以通过直接双击打开index.html运行
+
 ####文件包括
+
+>html基本结构（包括canvas等）
 
 >dinosaur.min.js (用于实现js逻辑)
 
 >dinosaur.css (少量的css用于初始界面)
+
+>图片资源
 
 #####例子:
 
@@ -66,12 +72,24 @@
 ```
 
 #####引用方式：
-1.首先引入css文件,具体文件引用位置可以自行设置
+
+1.引入图片文件
+
+1.1注意sprite01.png，wow.png是必须的（当然你可以修改其名字，同时在css、html、中设置正确的引用）。
+
+1.2注意在两个地方需要引用其路径 
+
+>1.dinosaur.css  background-image: url('图片wow.png');
+ 
+>2.需要在js文件中初始化 sprite01.png 的路径
+ 
+
+2.首先引入css文件,具体文件引用位置可以自行设置
 ```html
 <link rel="stylesheet" href="css/dinosaur.css" type="text/css">
 
 ```
-2.插入必须的HTML代码（！注意：音频文件在audio标签的src属性内引用）
+3.插入必须的HTML代码（！注意：音频文件在audio标签的src属性内引用）
 
 ```html
  <div class="dinosaur">
@@ -91,15 +109,17 @@
     </div>
 ```
 
-3.设置图片URL,LogoURL可以不设置（这个功能使用不当会引起画面非正常显示）
+4.引入dinosaur.js文件，设置图片URL,LogoURL可以不设置（这个功能使用不当会引起画面非正常显示）
 
 ```html
+    <script src="js/dinosaur.js"></script>
     <script>
         Game.setSpriteURL('./image/sprite01.png');
         Game.setLogoURL('./image/ASA-LOGO.png');
     </script>
 ```
-4.所有设置已经完成
+
+5.所有设置已经完成
 
 
 ###源码说明（位于 /js 文件夹下）：
