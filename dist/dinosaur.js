@@ -153,7 +153,7 @@ var Dinosaur = {
     deadCoordinate: [{left:2033, top: 0, width:80, height:96,drawWidth:80*0.6,drawHeight:96*0.6}],
     gbCoordinate: [
         {left:2206, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6},
-        {left:2325, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6},
+        {left:2325, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6}
     ],
 
     RISE_DURATION: 350,  //起跳至顶点的时间
@@ -165,6 +165,8 @@ var Dinosaur = {
 
     //初始化小恐龙
     init: function (canvas,image) {
+
+
         this.sprite = Object.create(Sprite);  //关联精灵对象
         this.spriteSheetPainter = Object.create(SpriteSheetPainter);  //关联精灵图绘制对象
 
@@ -177,7 +179,15 @@ var Dinosaur = {
         this.sprite.painter = this.spriteSheetPainter;
         this.sprite.behaviors = [this.runInplace,this.jump];
 
-        this.sprite.initShape(this.sprite.left+6,this.sprite.top+8,this.runCoordinate[0].drawWidth-15,this.runCoordinate[0].drawHeight-8);
+        var obj = [
+            {x:this.sprite.left+6, y:this.sprite.top+8 },
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-10, y:this.sprite.top+8 },
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-10, y:this.sprite.top+this.runCoordinate[0].drawHeight-30},
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-20, y:this.sprite.top+this.runCoordinate[0].drawHeight},
+            {x:this.sprite.left+16, y:this.sprite.top+this.runCoordinate[0].drawHeight },
+            {x:this.sprite.left+6, y:this.sprite.top+this.runCoordinate[0].drawHeight-30 }
+        ];
+        this.sprite.initShape2(obj);
         this.initTimeWarp();
 
         this.jump.self = this; //设置jump对this作用域的正确引用
@@ -205,23 +215,23 @@ var Dinosaur = {
                 this.fallTimer.start();  //下落计时器启动
             }else{
                 //小恐龙的跳跃高度为 最高高度 * （扭曲后的时间 / 执行总时间）
-                this.height = this.HEIGHT - this.HEIGHT / this.RISE_DURATION * this.riseTimer.getElapsedTime()+1;
+                this.height = this.HEIGHT - this.HEIGHT *this.riseTimer.getElapsedTime()/ this.RISE_DURATION;
             }
         }else if (this.fallTimer.isRunning()){
             if (this.fallTimer.isOver()){
                 this.fallTimer.stop();
                 this.height = 0;
             }else{
-                this.height = this.HEIGHT- this.HEIGHT / this.FALL_DURATION * this.fallTimer.getElapsedTime();
+                this.height = this.HEIGHT- this.HEIGHT * this.fallTimer.getElapsedTime() / this.FALL_DURATION;
             }
         }
     },
     //死亡就瞪 24K恐龙眼
-    dead: function () {
+    dead: function (canvas) {
         this.sprite.top = canvas.height - this.runCoordinate[0].drawHeight - 8;
         this.jump.orignTop = this.sprite.top;
-       this.spriteSheetPainter.cells = this.deadCoordinate;
-       this.spriteSheetPainter.cellIndex = 0;
+        this.spriteSheetPainter.cells = this.deadCoordinate;
+        this.spriteSheetPainter.cellIndex = 0;
     },
     //暴走状态
     goBallistic: function (canvas) {
@@ -268,14 +278,15 @@ var Dinosaur = {
             if (this.status){
                 if (this.self.height <= 0){  //当高度变为零时，则说明下落至地面（因为设置了上升时的起初高度总是大于1）
                     this.status = false;
+                    this.self.height = 1;
                 }
 
                 var delta = 0,
                     spriteTop = sprite.top;  //记录上一次的精灵高度
                 sprite.top = this.orignTop - this.self.height;
                 delta = sprite.top - spriteTop;   //计算两次变化的移动距离
-
                 sprite.shape.move(0, delta);  //调整形状对象跟随精灵移动
+
             }
         }
     }
@@ -603,7 +614,7 @@ var Game = {
     },
     //清空高分榜
     clearHighScores: function () {
-        localStorage[this.gameName + game.HIGH_SCORES_SUFFIX] = JSON.stringify([]);
+        localStorage[this.gameName + this.HIGH_SCORES_SUFFIX] = JSON.stringify([]);
     },
 
     /****************************************************************************************
@@ -663,8 +674,8 @@ var Game = {
         for(var i=0,len=this.shapes.length;i<len;i++){
             var shape = this.shapes[i];
             if (shape.visible){
-                shape.stroke(game.context);
-                shape.fill(game.context);
+                shape.stroke(this.context);
+                shape.fill(this.context);
             }
         }
     },
@@ -687,7 +698,7 @@ var Game = (function () {
     //初始化 game 对象
     game.init('game','canvas');
     game.soundInit(); //初始化音轨
-    //Sprite.setVisible(true); //设置模拟碰撞形状可见
+    Sprite.setVisible(true); //设置模拟碰撞形状可见
 
     //实现动画回调函数
     game.paintUnderSprites = function () {
@@ -730,7 +741,7 @@ var Game = (function () {
         if (game.highestScore>0){
             Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.highestScore);
         }
-        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],parseInt(game.score)); //绘制当前分数
+        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],Math.ceil(game.score)); //绘制当前分数
 
         if (game.passGame){  //如果游戏结束则，则显示背景和分数，不再添加障碍物
             return;
@@ -746,7 +757,7 @@ var Game = (function () {
 
     game.endAnimaet = function () {
         //这里可以执行一些一帧动画完成后的回调函数
-        if (game.score > 2000){
+        if (game.score > 30){
             game.passGame = true;
             game.pass();
         }
@@ -774,7 +785,7 @@ var Game = (function () {
         game.setHighScore(parseInt(game.score));
         Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.getHighScores());
         drawGameOver(game.canvas,game.context,game.images[SPRITE_URL]);
-        dinosaur.dead();
+        dinosaur.dead(game.canvas);
         var restart = Object.create(Restart);
         restart.init(game.canvas);
         restart.addClickEvent(game,game.canvas);
@@ -813,7 +824,6 @@ var Game = (function () {
     //游戏通过则显示 YOU WIN
     game.pass = function () {
         game.playSound('pass');
-        game.setHighScore(parseInt(game.score));
         Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.getHighScores());
 
         //ASA彩蛋版本 真的很捉急
@@ -1868,6 +1878,7 @@ var Sprite = {
     /*************************************************************************************
      *                            形状属性
      *************************************************************************************/
+    //绘制矩形
     initShape: function (left,top,width,height) {
         var polygonPoints = [
             new Point(left, top),
@@ -1880,6 +1891,20 @@ var Sprite = {
 
         var polygon = new Polygon(this.shapeVisible);
         for (var i = 0, len = polygonPoints.length; i < len; i++) {
+            polygon.addPoint(polygonPoints[i].x, polygonPoints[i].y);
+        }
+        this.shape = polygon;
+        this.shape.fillStyle = 'orange';
+    },
+    //绘制多边形（这里针对小恐龙）
+    initShape2: function (obj) {
+        var polygonPoints = [];
+        for(var i=0,len=obj.length;i<obj.length;i++){
+            polygonPoints.push(new Point(obj[i].x, obj[i].y));
+        }
+
+        var polygon = new Polygon(this.shapeVisible);
+        for (i = 0,len = polygonPoints.length; i < len; i++) {
             polygon.addPoint(polygonPoints[i].x, polygonPoints[i].y);
         }
         this.shape = polygon;
@@ -1899,13 +1924,13 @@ var Sprite = {
  ************************************************************************/
 
 var StopWatch = {
-    startTime: 0,
+    startTime: 1,
     running: false,
     elapsedTime: 0,
 
     start: function () {
         this.startTime = +new Date();
-        this.elapsedTime = 0;
+        this.elapsedTime = 1;
         this.running = true;
     },
 
@@ -1964,7 +1989,7 @@ var TimeWarper = {
     //返回值 = 实际时间 * （扭曲后的播放百分比 / 实际播放百分比）
     getElapsedTime: function () {
         var elapsedTime = this.stopWatch.getElapsedTime(),  //获取从计时时间
-            percentComplete = elapsedTime/this.duration;    //计算时间经过的百分比
+            percentComplete = elapsedTime/this.duration > 0 ? elapsedTime/this.duration:1;    //计算时间经过的百分比
 
         if (!this.stopWatch.running){
             return undefined;

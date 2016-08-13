@@ -8,7 +8,7 @@ var Game = (function () {
     //初始化 game 对象
     game.init('game','canvas');
     game.soundInit(); //初始化音轨
-    //Sprite.setVisible(true); //设置模拟碰撞形状可见
+    Sprite.setVisible(true); //设置模拟碰撞形状可见
 
     //实现动画回调函数
     game.paintUnderSprites = function () {
@@ -51,7 +51,7 @@ var Game = (function () {
         if (game.highestScore>0){
             Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.highestScore);
         }
-        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],parseInt(game.score)); //绘制当前分数
+        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],Math.ceil(game.score)); //绘制当前分数
 
         if (game.passGame){  //如果游戏结束则，则显示背景和分数，不再添加障碍物
             return;
@@ -67,7 +67,7 @@ var Game = (function () {
 
     game.endAnimaet = function () {
         //这里可以执行一些一帧动画完成后的回调函数
-        if (game.score > 2000){
+        if (game.score > 30){
             game.passGame = true;
             game.pass();
         }
@@ -95,7 +95,7 @@ var Game = (function () {
         game.setHighScore(parseInt(game.score));
         Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.getHighScores());
         drawGameOver(game.canvas,game.context,game.images[SPRITE_URL]);
-        dinosaur.dead();
+        dinosaur.dead(game.canvas);
         var restart = Object.create(Restart);
         restart.init(game.canvas);
         restart.addClickEvent(game,game.canvas);
@@ -134,7 +134,6 @@ var Game = (function () {
     //游戏通过则显示 YOU WIN
     game.pass = function () {
         game.playSound('pass');
-        game.setHighScore(parseInt(game.score));
         Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.getHighScores());
 
         //ASA彩蛋版本 真的很捉急

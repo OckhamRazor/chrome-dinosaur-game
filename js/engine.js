@@ -320,7 +320,7 @@ var Game = {
     },
     //清空高分榜
     clearHighScores: function () {
-        localStorage[this.gameName + game.HIGH_SCORES_SUFFIX] = JSON.stringify([]);
+        localStorage[this.gameName + this.HIGH_SCORES_SUFFIX] = JSON.stringify([]);
     },
 
     /****************************************************************************************
@@ -380,8 +380,8 @@ var Game = {
         for(var i=0,len=this.shapes.length;i<len;i++){
             var shape = this.shapes[i];
             if (shape.visible){
-                shape.stroke(game.context);
-                shape.fill(game.context);
+                shape.stroke(this.context);
+                shape.fill(this.context);
             }
         }
     },

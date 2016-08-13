@@ -32,7 +32,7 @@ var TimeWarper = {
     //返回值 = 实际时间 * （扭曲后的播放百分比 / 实际播放百分比）
     getElapsedTime: function () {
         var elapsedTime = this.stopWatch.getElapsedTime(),  //获取从计时时间
-            percentComplete = elapsedTime/this.duration;    //计算时间经过的百分比
+            percentComplete = elapsedTime/this.duration > 0 ? elapsedTime/this.duration:1;    //计算时间经过的百分比
 
         if (!this.stopWatch.running){
             return undefined;

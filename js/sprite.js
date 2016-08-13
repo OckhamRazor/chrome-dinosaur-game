@@ -96,6 +96,7 @@ var Sprite = {
     /*************************************************************************************
      *                            形状属性
      *************************************************************************************/
+    //绘制矩形
     initShape: function (left,top,width,height) {
         var polygonPoints = [
             new Point(left, top),
@@ -108,6 +109,20 @@ var Sprite = {
 
         var polygon = new Polygon(this.shapeVisible);
         for (var i = 0, len = polygonPoints.length; i < len; i++) {
+            polygon.addPoint(polygonPoints[i].x, polygonPoints[i].y);
+        }
+        this.shape = polygon;
+        this.shape.fillStyle = 'orange';
+    },
+    //绘制多边形（这里针对小恐龙）
+    initShape2: function (obj) {
+        var polygonPoints = [];
+        for(var i=0,len=obj.length;i<obj.length;i++){
+            polygonPoints.push(new Point(obj[i].x, obj[i].y));
+        }
+
+        var polygon = new Polygon(this.shapeVisible);
+        for (i = 0,len = polygonPoints.length; i < len; i++) {
             polygon.addPoint(polygonPoints[i].x, polygonPoints[i].y);
         }
         this.shape = polygon;

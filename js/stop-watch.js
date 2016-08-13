@@ -6,13 +6,13 @@
  ************************************************************************/
 
 var StopWatch = {
-    startTime: 0,
+    startTime: 1,
     running: false,
     elapsedTime: 0,
 
     start: function () {
         this.startTime = +new Date();
-        this.elapsedTime = 0;
+        this.elapsedTime = 1;
         this.running = true;
     },
 

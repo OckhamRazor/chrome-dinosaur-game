@@ -21,7 +21,7 @@ var Dinosaur = {
     deadCoordinate: [{left:2033, top: 0, width:80, height:96,drawWidth:80*0.6,drawHeight:96*0.6}],
     gbCoordinate: [
         {left:2206, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6},
-        {left:2325, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6},
+        {left:2325, top:38, width:110, height:54, drawWidth:110*0.6, drawHeight:54*0.6}
     ],
 
     RISE_DURATION: 350,  //起跳至顶点的时间
@@ -33,6 +33,8 @@ var Dinosaur = {
 
     //初始化小恐龙
     init: function (canvas,image) {
+
+
         this.sprite = Object.create(Sprite);  //关联精灵对象
         this.spriteSheetPainter = Object.create(SpriteSheetPainter);  //关联精灵图绘制对象
 
@@ -45,7 +47,15 @@ var Dinosaur = {
         this.sprite.painter = this.spriteSheetPainter;
         this.sprite.behaviors = [this.runInplace,this.jump];
 
-        this.sprite.initShape(this.sprite.left+6,this.sprite.top+8,this.runCoordinate[0].drawWidth-15,this.runCoordinate[0].drawHeight-8);
+        var obj = [
+            {x:this.sprite.left+6, y:this.sprite.top+8 },
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-10, y:this.sprite.top+8 },
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-10, y:this.sprite.top+this.runCoordinate[0].drawHeight-30},
+            {x:this.sprite.left+this.runCoordinate[0].drawWidth-20, y:this.sprite.top+this.runCoordinate[0].drawHeight},
+            {x:this.sprite.left+16, y:this.sprite.top+this.runCoordinate[0].drawHeight },
+            {x:this.sprite.left+6, y:this.sprite.top+this.runCoordinate[0].drawHeight-30 }
+        ];
+        this.sprite.initShape2(obj);
         this.initTimeWarp();
 
         this.jump.self = this; //设置jump对this作用域的正确引用
@@ -73,23 +83,23 @@ var Dinosaur = {
                 this.fallTimer.start();  //下落计时器启动
             }else{
                 //小恐龙的跳跃高度为 最高高度 * （扭曲后的时间 / 执行总时间）
-                this.height = this.HEIGHT - this.HEIGHT / this.RISE_DURATION * this.riseTimer.getElapsedTime()+1;
+                this.height = this.HEIGHT - this.HEIGHT *this.riseTimer.getElapsedTime()/ this.RISE_DURATION;
             }
         }else if (this.fallTimer.isRunning()){
             if (this.fallTimer.isOver()){
                 this.fallTimer.stop();
                 this.height = 0;
             }else{
-                this.height = this.HEIGHT- this.HEIGHT / this.FALL_DURATION * this.fallTimer.getElapsedTime();
+                this.height = this.HEIGHT- this.HEIGHT * this.fallTimer.getElapsedTime() / this.FALL_DURATION;
             }
         }
     },
     //死亡就瞪 24K恐龙眼
-    dead: function () {
+    dead: function (canvas) {
         this.sprite.top = canvas.height - this.runCoordinate[0].drawHeight - 8;
         this.jump.orignTop = this.sprite.top;
-       this.spriteSheetPainter.cells = this.deadCoordinate;
-       this.spriteSheetPainter.cellIndex = 0;
+        this.spriteSheetPainter.cells = this.deadCoordinate;
+        this.spriteSheetPainter.cellIndex = 0;
     },
     //暴走状态
     goBallistic: function (canvas) {
@@ -136,14 +146,15 @@ var Dinosaur = {
             if (this.status){
                 if (this.self.height <= 0){  //当高度变为零时，则说明下落至地面（因为设置了上升时的起初高度总是大于1）
                     this.status = false;
+                    this.self.height = 1;
                 }
 
                 var delta = 0,
                     spriteTop = sprite.top;  //记录上一次的精灵高度
                 sprite.top = this.orignTop - this.self.height;
                 delta = sprite.top - spriteTop;   //计算两次变化的移动距离
-
                 sprite.shape.move(0, delta);  //调整形状对象跟随精灵移动
+
             }
         }
     }
