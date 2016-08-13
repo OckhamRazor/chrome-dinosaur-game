@@ -8,7 +8,7 @@ var Game = (function () {
     //初始化 game 对象
     game.init('game','canvas');
     game.soundInit(); //初始化音轨
-    Sprite.setVisible(true); //设置模拟碰撞形状可见
+    //Sprite.setVisible(true); //设置模拟碰撞形状可见
 
     //实现动画回调函数
     game.paintUnderSprites = function () {
@@ -67,7 +67,7 @@ var Game = (function () {
 
     game.endAnimaet = function () {
         //这里可以执行一些一帧动画完成后的回调函数
-        if (game.score > 30){
+        if (game.score > 2000){
             game.passGame = true;
             game.pass();
         }

@@ -23,7 +23,8 @@ gulp.task('lint',function () {
  * scripts任务会合并 js/ 目录下所有的js文件并输出到 dist/ 目录
  */
 gulp.task('scripts', function () {
-    gulp.src('./js/*.js')
+    gulp.src(['./js/score.js','./js/shapes.js','./js/sprite.js','./js/stop-watch.js','./js/time-warp.js','./js/cacti.js','./js/pterosaur.js',
+            './js/dinosaur.js','./js/restart.js','./js/engine.js','./js/background.js','./js/game.js'])
         .pipe(concat('dinosaur.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(rename('dinosaur.min.js'))
