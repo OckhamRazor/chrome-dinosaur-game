@@ -46,6 +46,7 @@ var Score = {
     //绘制历史最高分
     drawHIScore: function (canvas,context,image,HIScore) {
         context.save();
+        context.clearRect(canvas.width-280,10,140,24*0.6);
         this.drawNumber(context,image,10,canvas.width-300,10);
         this.drawNumber(context,image,11,canvas.width-280,10);
         HIScore = HIScore+'';

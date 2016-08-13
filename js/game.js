@@ -51,7 +51,7 @@ var Game = (function () {
         if (game.highestScore>0){
             Score.drawHIScore(game.canvas,game.context,game.images[SPRITE_URL],game.highestScore);
         }
-        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],Math.ceil(game.score)); //绘制当前分数
+        Score.drawCurrentScore(game.canvas,game.context,game.images[SPRITE_URL],parseInt(game.score)); //绘制当前分数
 
         if (game.passGame){  //如果游戏结束则，则显示背景和分数，不再添加障碍物
             return;
