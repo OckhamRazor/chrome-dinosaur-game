@@ -4,7 +4,7 @@
 这是一个畸形版的chrome恐龙游戏。很久之前就
 规划开始准备仿照写这个小游戏了，限于水平至今才完成,手动滑稽。
 
->展示页面 https://juicees.github.io/
+>展示页面 https://game-dinosaur.github.io/
 
 ###版本说明
 >v0.0.1 
